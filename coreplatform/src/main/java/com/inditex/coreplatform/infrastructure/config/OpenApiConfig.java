@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import com.inditex.coreplatform.exception.OpenApiConfigurationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ public class OpenApiConfig {
             String openApiContent = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             return new OpenAPIV3Parser().readContents(openApiContent, null, null).getOpenAPI();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load openapi.yml", e);
+            throw new OpenApiConfigurationException("Failed to load openapi.yml", e);
         }
     }
 }
