@@ -8,56 +8,50 @@ on:
   pull_request:
     branches:
       - master
-  workflow_dispatch: # Permite ejecución manual desde GitHub
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    # ¡Clave! Todas las acciones se ejecutarán en ./coreplatform
+    defaults:
+      run:
+        working-directory: ./coreplatform
+
     steps:
-      # 1. Clonar el código del repositorio
+      # 1. Clonar el repositorio
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Configurar JDK (Java 17)
+      # 2. Configurar Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: temurin
 
-      # 3. Cambiar el directorio de trabajo a coreplatform
-      - name: Change working directory
-        run: cd coreplatform
+      # 3. Dar permisos al gradlew (ahora usa ruta relativa)
+      - name: Grant Gradle Wrapper permissions
+        run: chmod +x gradlew
 
-      # 4. Otorgar permisos de ejecución al wrapper de Gradle
-      - name: Grant execution permission to Gradle Wrapper
-        run: chmod +x coreplatform/gradlew
-
-      # 5. Compilar el proyecto con Gradle
-      - name: Build Project
-        run: coreplatform/gradlew build --no-daemon
-
-      # 6. Ejecutar pruebas con Gradle
-      - name: Run Tests
-        run: coreplatform/gradlew test --no-daemon
-
-      # 7. Generar reporte de cobertura con JaCoCo
-      - name: Generate JaCoCo Coverage Report
-        run: coreplatform/gradlew jacocoTestReport
-
-      # 8. Verificar que la cobertura sea mayor al 20%
+      # 4. Compilar (usando tareas específicas para evitar el error del mainClass)
+      - name: Build and Test
+        run: |
+          ./gradlew assemble test jacocoTestReport --no-daemon
+          
+      # 5. Verificar cobertura
       - name: Verify Coverage > 20%
         run: |
-          coverage=$(grep -oP '<counter type="INSTRUCTION".*' coreplatform/build/reports/jacoco/test/jacocoTestReport.xml | \
+          coverage=$(grep -oP '<counter type="INSTRUCTION".*' build/reports/jacoco/test/jacocoTestReport.xml | \
             sed -e 's/.*covered="\([^"]*\)".*missed="\([^"]*\)".*/\1 \2/' | \
             awk '{covered=$1; missed=$2; total=covered+missed; perc=covered*100/total; print perc}')
-          echo "Coverage percentage: $coverage%"
+          echo "Coverage: $coverage%"
           if (( $(echo "$coverage < 20.0" | bc -l) )); then
-            echo "ERROR: Coverage is below 20%!"
+            echo "ERROR: Cobertura < 20%!"
             exit 1
           fi
 
-      # 9. Ejecutar análisis de calidad con SonarQube
+      # 6. SonarQube (opcional, si lo necesitas)
       - name: Run Sonar Analysis
-        run: coreplatform/gradlew sonarqube
+        run: ./gradlew sonarqube --no-daemon
