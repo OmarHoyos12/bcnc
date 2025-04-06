@@ -26,30 +26,30 @@ jobs:
           java-version: '17'
           distribution: temurin
 
-      # 3. Cambiar al directorio del proyecto (coreplatform)
-      - name: Change to project directory
-        working-directory: coreplatform
+      # 3. Cambiar el directorio de trabajo a coreplatform
+      - name: Change working directory
+        run: cd coreplatform
 
       # 4. Otorgar permisos de ejecución al wrapper de Gradle
       - name: Grant execution permission to Gradle Wrapper
-        run: chmod +x ./gradlew
+        run: chmod +x coreplatform/gradlew
 
       # 5. Compilar el proyecto con Gradle
       - name: Build Project
-        run: ./gradlew build --no-daemon
+        run: coreplatform/gradlew build --no-daemon
 
       # 6. Ejecutar pruebas con Gradle
       - name: Run Tests
-        run: ./gradlew test --no-daemon
+        run: coreplatform/gradlew test --no-daemon
 
       # 7. Generar reporte de cobertura con JaCoCo
       - name: Generate JaCoCo Coverage Report
-        run: ./gradlew jacocoTestReport
+        run: coreplatform/gradlew jacocoTestReport
 
       # 8. Verificar que la cobertura sea mayor al 20%
       - name: Verify Coverage > 20%
         run: |
-          coverage=$(grep -oP '<counter type="INSTRUCTION".*' build/reports/jacoco/test/jacocoTestReport.xml | \
+          coverage=$(grep -oP '<counter type="INSTRUCTION".*' coreplatform/build/reports/jacoco/test/jacocoTestReport.xml | \
             sed -e 's/.*covered="\([^"]*\)".*missed="\([^"]*\)".*/\1 \2/' | \
             awk '{covered=$1; missed=$2; total=covered+missed; perc=covered*100/total; print perc}')
           echo "Coverage percentage: $coverage%"
@@ -60,4 +60,4 @@ jobs:
 
       # 9. Ejecutar análisis de calidad con SonarQube
       - name: Run Sonar Analysis
-        run: ./gradlew sonarqube
+        run: coreplatform/gradlew sonarqube
