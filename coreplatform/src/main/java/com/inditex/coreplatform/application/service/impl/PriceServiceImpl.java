@@ -22,7 +22,7 @@ public class PriceServiceImpl implements PriceService {
         List<Price> prices = priceRepository.findValidPrices(applicationDate, productId, brandId);
         Price selectedPrice = pricingStrategy.selectPrice(prices);
         if (selectedPrice == null) {
-            throw new ResourceNotFoundException("No se encontro precio aplicable para los parametros indicados.");
+            throw new ResourceNotFoundException("No se encontro precio aplicable para los parametros indicados. prueba pipeline");
         }
         return selectedPrice;
     }
