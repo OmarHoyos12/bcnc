@@ -13,8 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # ¡Clave! Todas las acciones se ejecutarán en ./coreplatform
     defaults:
       run:
         working-directory: ./coreplatform
@@ -29,29 +27,26 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: temurin
+          distribution: 'temurin'
 
-      # 3. Dar permisos al gradlew (ahora usa ruta relativa)
-      - name: Grant Gradle Wrapper permissions
+      # 3. Permisos para Gradle Wrapper
+      - name: Grant Gradle permissions
         run: chmod +x gradlew
 
-      # 4. Compilar (usando tareas específicas para evitar el error del mainClass)
+      # 4. Compilación, pruebas y reporte de cobertura (todo en uno)
       - name: Build and Test
         run: |
           ./gradlew assemble test jacocoTestReport --no-daemon
-          
-      # 5. Verificar cobertura
-      - name: Verify Coverage > 20%
+          echo "Build completado - Reporte de cobertura generado"
+
+      # 5. Verificación de cobertura (>20%)
+      - name: Verify Coverage
         run: |
           coverage=$(grep -oP '<counter type="INSTRUCTION".*' build/reports/jacoco/test/jacocoTestReport.xml | \
             sed -e 's/.*covered="\([^"]*\)".*missed="\([^"]*\)".*/\1 \2/' | \
             awk '{covered=$1; missed=$2; total=covered+missed; perc=covered*100/total; print perc}')
-          echo "Coverage: $coverage%"
-          if (( $(echo "$coverage < 20.0" | bc -l) )); then
-            echo "ERROR: Cobertura < 20%!"
+          echo "Cobertura actual: $coverage%"
+          if (( $(echo "$coverage < 20" | bc -l) )); then
+            echo "❌ Error: Cobertura insuficiente (<20%)"
             exit 1
           fi
-
-      # 6. SonarQube (opcional, si lo necesitas)
-      - name: Run Sonar Analysis
-        run: ./gradlew sonarqube --no-daemon
