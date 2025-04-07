@@ -1,0 +1,61 @@
+openapi: 3.0.1
+info:
+  title: "Inditex Core Platform API"
+  version: "1.0.0"
+  description: "API para consultar precios aplicables de productos según marca y fecha."
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/prices:
+    get:
+      summary: "Obtener precio aplicable"
+      description: "Obtiene el precio aplicable para un producto en una fecha específica, incluyendo la hora."
+      parameters:
+        - in: query
+          name: applicationDate
+          required: true
+          description: "Fecha y hora de consulta en formato yyyy-MM-dd'T'HH:mm:ss (por ejemplo, 2020-06-14T00:00:00)"
+          schema:
+            type: string
+            example: "2020-06-14T00:00:00"
+        - in: query
+          name: productId
+          required: true
+          description: "Identificador único del producto"
+          schema:
+            type: integer
+            example: 35455
+        - in: query
+          name: brandId
+          required: true
+          description: "Identificador único de la marca"
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: "Respuesta exitosa"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  productId:
+                    type: integer
+                  brandId:
+                    type: integer
+                  priceList:
+                    type: integer
+                  startDate:
+                    type: string
+                    format: date-time
+                  endDate:
+                    type: string
+                    format: date-time
+                  price:
+                    type: number
+                    format: float
+        '400':
+          description: "Solicitud inválida"
+        '404':
+          description: "Precio no encontrado"
