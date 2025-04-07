@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class PriceResponse {
     private Long productId;
     private Integer brandId;
-    private Integer priceList;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private BigDecimal price;
@@ -21,7 +20,6 @@ public class PriceResponse {
     public PriceResponse(Price price) {
         this.productId = price.getProductId();
         this.brandId = price.getBrandId();
-        this.priceList = price.getPriceList();
         this.startDate = price.getStartDate();
         this.endDate = price.getEndDate();
         this.price = price.getPrice();

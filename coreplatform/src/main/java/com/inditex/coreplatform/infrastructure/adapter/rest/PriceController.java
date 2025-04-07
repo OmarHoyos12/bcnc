@@ -16,6 +16,12 @@ public class PriceController {
 
     private final PriceService priceService;
 
+    /**
+     * Endpoint para consultar el precio aplicable.
+     * @param applicationDate Fecha en formato yyyy-MM-dd'T'HH:mm:ss
+     * @param productId ID del producto
+     * @param brandId ID de la marca
+     */
     @GetMapping
     public ResponseEntity<PriceResponse> getPrice(
             @RequestParam("applicationDate")

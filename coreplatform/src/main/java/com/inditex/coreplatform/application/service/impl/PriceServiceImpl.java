@@ -17,12 +17,18 @@ public class PriceServiceImpl implements PriceService {
     private final PriceRepository priceRepository;
     private final PricingStrategy pricingStrategy;
 
+    /**
+     * Obtiene el precio aplicable para un producto en una fecha específica.
+     * @param applicationDate Fecha de aplicación
+     * @param productId ID del producto
+     * @param brandId ID de la marca
+     */
     @Override
     public Price getApplicablePrice(LocalDateTime applicationDate, Long productId, Integer brandId) {
         List<Price> prices = priceRepository.findValidPrices(applicationDate, productId, brandId);
         Price selectedPrice = pricingStrategy.selectPrice(prices);
         if (selectedPrice == null) {
-            throw new ResourceNotFoundException("No se encontro precio aplicable para los parametros indicados. prueba pipeline");
+            throw new ResourceNotFoundException("No se encontro precio aplicable para los parametros indicados.");
         }
         return selectedPrice;
     }

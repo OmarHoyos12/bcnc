@@ -22,7 +22,7 @@ class PriceRepositoryTest {
         priceRepository.deleteAll();
     }
     @Test
-    void findValidPrices_shouldReturnPricesOrderedByPriorityDesc() {
+    void findValidPricesShouldReturnPricesOrderedByPriorityDesc() {
         // Dados dos precios: uno promocional y uno base
         Price promotionalPrice = Price.builder()
                 .brandId(1)
@@ -62,7 +62,7 @@ class PriceRepositoryTest {
     }
 
     @Test
-    void findValidPrices_shouldReturnEmpty_whenNoPriceIsValid() {
+    void findValidPricesShouldReturnEmptyWhenNoPriceIsValid() {
         // Se inserta un precio cuyo intervalo de validez es en julio
         Price price = Price.builder()
                 .brandId(1)
