@@ -202,8 +202,7 @@ json
 
 ## Pruebas con Postman
 
-Para probar los endpoints de este proyecto, puedes importar la colección de Postman disponible en el archivo [PriceAPI.postman_collection.json](PriceAPI.postman_collection.json) ubicado en la raíz del repositorio.
-
+Para probar los endpoints de este proyecto, puedes importar la colección de Postman disponible en el archivo [PriceAPI.postman_collection.json](PriceAPI.postman_collection.json) ubicado en la ruta: src/test/java/com/inditex/coreplatform/resources/
 ### Cómo Importar
 1. Abre Postman.
 2. Ve a **File > Import**.

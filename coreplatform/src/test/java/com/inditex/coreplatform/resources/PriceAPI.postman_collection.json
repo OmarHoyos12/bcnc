@@ -1,0 +1,27 @@
+{
+  "info": {
+    "name": "Price API",
+    "description": "Colección para probar el endpoint del PriceController",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Price",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/prices?applicationDate=2023-01-01T10:00:00&productId=1&brandId=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "prices"],
+          "query": [
+            { "key": "applicationDate", "value": "2023-01-01T10:00:00" },
+            { "key": "productId", "value": "1" },
+            { "key": "brandId", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
